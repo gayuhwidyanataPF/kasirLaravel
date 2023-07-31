@@ -2,7 +2,8 @@
 
 @section('container')
 <h1 class="text-center my-3">Form Pemasok</h1>
-    <a href="{{ route('pemasok.create') }}" class="btn btn-md btn-success mb-3">TAMBAH Pemasok</a>
+    <a href="{{ route('pemasok.create') }}" class="btn btn-md btn-success mb-3">Tambah Pemasok</a>
+    <a href="/" class="btn btn-md btn-dark mb-3">Kembali</a>
     <table class="table table-bordered">
         <thead>
             <tr>

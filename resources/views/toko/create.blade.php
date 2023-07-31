@@ -1,15 +1,15 @@
 @extends('layouts.main')
 
 @section('container')
-<h1 class="text-center my-3">Form Tambah Gudang</h1>
-    <form action="{{ route('gudang.store') }}" method="POST" enctype="multipart/form-data">
+<h1 class="text-center my-3">Form Tambah Toko</h1>
+    <form action="{{ route('toko.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="mb-3">
-            <label class="form-label">Kode Gudang</label>
-            <input type="text" class="form-control @error('kode_gudang') is-invalid @enderror" name="kode_gudang" value="{{ old('kode_gudang') }}" placeholder="Masukkan Kode Gudang">
+            <label class="form-label">Kode Toko</label>
+            <input type="text" class="form-control @error('kode_toko') is-invalid @enderror" name="kode_toko" value="{{ old('kode_toko') }}" placeholder="Masukkan Kode Toko">
 
-            @error('kode_gudang')
+            @error('kode_toko')
                 <div class="alert alert-danger mt-2">
                     {{ $message }}
                 </div>
@@ -42,7 +42,7 @@
 
         <button type="submit" class="btn btn-md btn-primary">Simpan</button>
         <button type="reset" class="btn btn-md btn-warning">Reset</button>
-        <a href="/gudang" class="btn btn-md btn-dark">Kembali</a>
+        <a href="/toko" class="btn btn-md btn-dark">Kembali</a>
 
     </form>
 @endsection

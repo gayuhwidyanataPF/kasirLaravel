@@ -22,3 +22,5 @@ Route::get('/', function () {
 Route::resource('/pemasok', \App\Http\Controllers\PemasokController::class);
 Route::resource('/gudang', \App\Http\Controllers\GudangController::class);
 Route::resource('/jenisBarang', \App\Http\Controllers\JenisBarangController::class);
+Route::resource('/toko', \App\Http\Controllers\TokoController::class);
+Route::resource('/barang', \App\Http\Controllers\BarangController::class);
