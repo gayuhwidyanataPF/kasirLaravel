@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Models\JenisBarang;
+use App\Models\Pemasok;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -22,7 +23,8 @@ class BarangController extends Controller
     public function create(): View
     {
         $jenisBarangs = JenisBarang::all();
-        return view('barang.create', compact('jenisBarangs'), [
+        $pemasoks = Pemasok::all();
+        return view('barang.create', compact('jenisBarangs', 'pemasoks'), [
             'title' => "Form Tambah Barang"
         ]);
     }
@@ -33,6 +35,7 @@ class BarangController extends Controller
             'kode_jenis' => 'required',
             'kode_barang' => 'required|min:5',
             'nama' => 'required|min:3',
+            'kode_pemasok' => 'required',
             'harga' => 'required|min:5',
         ]);
 
@@ -40,6 +43,7 @@ class BarangController extends Controller
             'kode_jenis' => $request->kode_jenis,
             'kode_barang' => $request->kode_barang,
             'nama' => $request->nama,
+            'kode_pemasok' => $request->kode_pemasok,
             'harga' => $request->harga
         ]);
 
@@ -51,7 +55,8 @@ class BarangController extends Controller
     {
         $barang = Barang::findOrFail($id);
         $jenisBarangs = JenisBarang::all();
-        return view('barang.edit', compact('barang', 'jenisBarangs'), [
+        $pemasoks = Pemasok::all();
+        return view('barang.edit', compact('barang', 'jenisBarangs', 'pemasoks'), [
             'title' => 'Form Edit Barang'
         ]);
     }
@@ -62,6 +67,7 @@ class BarangController extends Controller
         $this->validate($request, [
             'kode_jenis' => 'required',
             'nama' => 'required|min:3',
+            'kode_pemasok' => 'required',
             'harga' => 'required|min:5',
         ]);
 
@@ -71,6 +77,7 @@ class BarangController extends Controller
         $post->update([
             'kode_jenis' => $request->kode_jenis,
             'nama' => $request->nama,
+            'kode_pemasok' => $request->kode_pemasok,
             'harga' => $request->harga
         ]);
 

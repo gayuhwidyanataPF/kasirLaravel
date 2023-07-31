@@ -14,4 +14,9 @@ class Pemasok extends Model
         'alamat',
         'no_telp'
     ];
+
+    public function Rpemasok()
+    {
+        return $this->hasMany(Barang::class);
+    }
 }

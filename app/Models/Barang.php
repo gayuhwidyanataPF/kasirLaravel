@@ -11,6 +11,7 @@ class Barang extends Model
     protected $fillable = [
         'kode_jenis',
         'kode_barang',
+        'kode_pemasok',
         'nama',
         'harga'
     ];
@@ -19,4 +20,15 @@ class Barang extends Model
     {
         return $this->belongsTo(JenisBarang::class, 'kode_jenis');
     }
+
+    public function RRpemasok()
+    {
+        return $this->belongsTo(Pemasok::class, 'kode_pemasok');
+    }
+
+    public function Rbarang()
+    {
+        return $this->hasMany(Barang::class);
+    }
+
 }

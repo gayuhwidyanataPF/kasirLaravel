@@ -33,6 +33,21 @@
         </div>
 
         <div class="mb-3">
+            <label class="form-label">Pemasok</label>
+            <select name="kode_pemasok" id="kode_pemasok" class="form-control">
+                @foreach($pemasoks as $pemasok)
+                <option value="{{ $pemasok->id }}" @if($barang->kode_pemasok == $pemasok->id) selected @endif>{{ $pemasok->nama }}</option>
+                @endforeach
+            </select>
+
+            @error('kode_pemasok')
+                <div class="alert alert-danger mt-2">
+                    {{ $message }}
+                </div>
+            @enderror
+        </div>
+
+        <div class="mb-3">
             <label class="form-label">Harga</label>
             <input type="text" class="form-control @error('harga') is-invalid @enderror" name="harga" value="{{ old('harga', $barang->harga) }}" placeholder="Masukkan harga">
 

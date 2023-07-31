@@ -13,4 +13,9 @@ class Gudang extends Model
         'nama',
         'alamat'
     ];
+
+    public function Rgudang()
+    {
+        return $this->hasOne(Gudang::class);
+    }
 }
