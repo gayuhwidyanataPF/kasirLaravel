@@ -1,6 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TokoController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\BarangController;
+use App\Http\Controllers\GudangController;
+use App\Http\Controllers\PemasokController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\StokgudangController;
+use App\Http\Controllers\JenisBarangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,11 +27,14 @@ Route::get('/', function () {
     ]);
 });
 
-Route::resource('/pemasok', \App\Http\Controllers\PemasokController::class);
-Route::resource('/gudang', \App\Http\Controllers\GudangController::class);
-Route::resource('/jenisBarang', \App\Http\Controllers\JenisBarangController::class);
-Route::resource('/toko', \App\Http\Controllers\TokoController::class);
-Route::resource('/barang', \App\Http\Controllers\BarangController::class);
-Route::resource('/stokGudang', \App\Http\Controllers\StokgudangController::class);
+Route::resource('/pemasok',PemasokController::class);
+Route::resource('/gudang',GudangController::class);
+Route::resource('/jenisBarang',JenisBarangController::class);
+Route::resource('/toko',TokoController::class);
+Route::resource('/barang',BarangController::class);
+Route::resource('/stokGudang',StokgudangController::class);
 
-Route::resource('/login', \App\Http\Controllers\LoginController::class);
+Route::get('/login', [LoginController::class, 'index']);
+Route::post('/login', [LoginController::class, 'authenticate']);
+
+Route::get('/dashboard', [DashboardController::class, 'index']);

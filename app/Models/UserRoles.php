@@ -12,4 +12,9 @@ class UserRoles extends Model
         'id'
     ];
 
+    public function Users()
+    {
+        return $this->hasOne(Users::class);
+    }
+
 }
