@@ -7,8 +7,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
-use App\Models\Users;
-
  
 class LoginController extends Controller
 {
@@ -44,6 +42,6 @@ class LoginController extends Controller
      
         $request->session()->regenerateToken();
      
-        return redirect('/');
+        return redirect('/login');
     }
 }

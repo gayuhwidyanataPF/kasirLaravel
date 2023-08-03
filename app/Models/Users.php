@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UserRules;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Users extends Authenticatable
 {
@@ -17,8 +20,8 @@ class Users extends Authenticatable
         'password',
     ];
 
-    public function UserRoles()
+    public function userRule(): BelongsTo
     {
-        return $this->hasMany(UserRoles::class);
+        return $this->belongsTo(UserRules::class, 'id_rule');
     }
 }

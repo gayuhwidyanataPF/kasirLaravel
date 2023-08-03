@@ -4,17 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class UserRoles extends Model
+class UserRules extends Model
 {
     use HasFactory;
     protected $guarded = [
         'id'
     ];
 
-    public function Users()
+    public function User(): HasMany
     {
-        return $this->hasOne(Users::class);
+        return $this->hasMany(User::class, 'id_rule');
     }
 
 }

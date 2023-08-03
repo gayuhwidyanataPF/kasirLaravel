@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('user_rules', function (Blueprint $table) {
             $table->id();
-            $table->string('rule');
+            $table->string('role');
             // $table->timestamps();
         });
     }

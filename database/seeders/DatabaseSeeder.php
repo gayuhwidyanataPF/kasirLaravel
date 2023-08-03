@@ -24,15 +24,15 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         DB::table('user_rules')->insert([
-            'rule' => 'admin'
+            'role' => 'admin'
         ]);
 
         DB::table('user_rules')->insert([
-            'rule' => 'gudang'
+            'role' => 'gudang'
         ]);
 
         DB::table('user_rules')->insert([
-            'rule' => 'kasir'
+            'role' => 'kasir'
         ]);
 
         \App\Models\Users::create([

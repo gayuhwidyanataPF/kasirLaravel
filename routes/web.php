@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UsersController;
 use App\Http\Controllers\TokoController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\BarangController;
@@ -27,6 +28,15 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('/login', [LoginController::class, 'authenticate']);
+Route::post('/logout', [LoginController::class, 'logout']);
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');
+
+Route::resource('/dashboard/akun', UsersController::class);
+
+
 Route::resource('/pemasok',PemasokController::class);
 Route::resource('/gudang',GudangController::class);
 Route::resource('/jenisBarang',JenisBarangController::class);
@@ -34,7 +44,3 @@ Route::resource('/toko',TokoController::class);
 Route::resource('/barang',BarangController::class);
 Route::resource('/stokGudang',StokgudangController::class);
 
-Route::get('/login', [LoginController::class, 'index']);
-Route::post('/login', [LoginController::class, 'authenticate']);
-
-Route::get('/dashboard', [DashboardController::class, 'index']);
