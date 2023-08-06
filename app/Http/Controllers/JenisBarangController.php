@@ -4,79 +4,70 @@ namespace App\Http\Controllers;
 
 use App\Models\JenisBarang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 
 class JenisBarangController extends Controller
 {
-    public function index(): View
+    public function index()
     {
-        $jenisBarangs = JenisBarang::oldest()->paginate();
-
-        return view('jenisBarang.jenisBarang', compact('jenisBarangs'), [
-            'title' => "Form Jenis Barang",
+        $jenisBarang = JenisBarang::all();
+        $cek = JenisBarang::count();
+        if($cek == 0){
+            $urut = 10001;
+            $nomer = 'JNBRG' . $urut;
+        }else{
+            $ambil = JenisBarang::all()->last();
+            $urut = (int)substr($ambil->kode_jenis_barang, - 5) + 1;
+            $nomer = 'JNBRG' . $urut;
+        }
+        return view('jenisBarang.index', compact('jenisBarang', 'nomer') ,[
+            'title' => 'Data Jenis Barang'
         ]);
     }
 
-    public function create(): View
+    // public function create(): View
+    // {
+    //     return view('jenisBarang.create', [
+    //         'title' => "Form Tambah Jenis Barang",
+    //     ]);
+    // }
+
+    public function store(Request $request)
     {
-        return view('jenisBarang.create', [
-            'title' => "Form Tambah Jenis Barang",
+        $jenisBarang = new JenisBarang();
+        $jenisBarang->kode_jenis_barang = $request->input('kode_jenis_barang');
+        $jenisBarang->kategori_barang = $request->input('kategori_barang');
+        $jenisBarang->save();
+        return redirect()->back()->with('status', 'Added Successfully');
+    }
+
+    public function edit(string $id)
+    {
+        $jenisBarang = JenisBarang::find($id);
+        return response()->json([
+            'status'=>200,
+            'jenisBarang'=>$jenisBarang
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function update(Request $request)
     {
-        $this->validate($request, [
-            'kode_jenis_barang' => 'required|min:7',
-            'kategori_barang' => 'required|min:2'
-        ]);
+        $jenis_barang_id = $request->input('jenis_barang_id');
+        $jenisBarang = JenisBarang::find($jenis_barang_id);
+        $jenisBarang->kode_jenis_barang = $request->input('kode_jenis_barang');
+        $jenisBarang->kategori_barang = $request->input('kategori_barang');
+        $jenisBarang->update();
 
-        JenisBarang::create([
-            'kode_jenis_barang' => $request->kode_jenis_barang,
-            'kategori_barang' => $request->kategori_barang
-        ]);
-
-        //redirect to index
-        return redirect()->route('jenisBarang.index')->with(['success' => 'Data Berhasil Disimpan!']);
+        return redirect()->back()->with('status', 'Updated Successfully');
     }
 
-    public function edit(string $id): View
+    public function destroy(Request $request)
     {
-        $jenisBarang = JenisBarang::findOrFail($id);
-
-        return view('jenisBarang.edit', compact('jenisBarang'), [
-            'title' => 'Form Edit Jenis Barang'
-        ]);
-    }
-
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //validate form
-        $this->validate($request, [
-            'kategori_barang' => 'required|min:2',
-        ]);
-
-        //get post by ID
-        $post = JenisBarang::findOrFail($id);
-
-        $post->update([
-            'kategori_barang'   => $request->kategori_barang
-        ]);
-
-        //redirect to index
-        return redirect()->route('jenisBarang.index')->with(['success' => 'Data Berhasil Diubah!']);
-    }
-
-    public function destroy($id): RedirectResponse
-    {
-        //get post by ID
-        $post = JenisBarang::findOrFail($id);
-
-        //delete post
-        $post->delete();
-
-        //redirect to index
-        return redirect()->route('jenisBarang.index')->with(['success' => 'Data Berhasil Dihapus!']);
+        $jenis_barang_id = $request->input('deleting_id');
+        $jenisBarang = JenisBarang::find($jenis_barang_id);
+        $jenisBarang->delete();
+        return redirect()->back()->with('status', 'Deleted Successfully');
     }
 }

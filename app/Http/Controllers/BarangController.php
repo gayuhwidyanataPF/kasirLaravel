@@ -13,87 +13,90 @@ class BarangController extends Controller
 {
     public function index(): View
     {
-        $barangs = Barang::oldest()->paginate();
+        $barang = Barang::oldest()->paginate();
+        $jenisBarang = JenisBarang::all();
+        $pemasok = Pemasok::all();
 
-        return view('barang.barang', compact('barangs'), [
-            'title' => "Form Barang",
+        $cek = Barang::count();
+        if($cek == 0){
+            $urut = 10001;
+            $nomer = 'BRG' . $urut;
+        }else{
+            $ambil = Barang::all()->last();
+            $urut = (int)substr($ambil->kode_barang, - 5) + 1;
+            $nomer = 'BRG' . $urut;
+        }
+
+        return view('barang.index', compact('barang', 'jenisBarang', 'pemasok', 'nomer'), [
+            'title' => "Data Barang",
         ]);
     }
 
-    public function create(): View
+    public function create()
     {
-        $jenisBarangs = JenisBarang::all();
-        $pemasoks = Pemasok::all();
-        return view('barang.create', compact('jenisBarangs', 'pemasoks'), [
-            'title' => "Form Tambah Barang"
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $barang = new Barang();
+        $barang->kode_barang = $request->input('kode_barang');
+        $barang->kode_jenis = $request->input('kode_jenis');
+        $barang->nama = $request->input('nama');
+        $barang->kode_pemasok = $request->input('kode_pemasok');
+        $barang->harga = $request->input('harga');
+        $barang->save();
+        return redirect()->back()->with('status', 'Status berhasillll');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $barang = Barang::find($id);
+        return response()->json([
+            'status'=>200,
+            'barang'=>$barang
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request)
     {
-        $this->validate($request, [
-            'kode_jenis' => 'required',
-            'kode_barang' => 'required|min:5',
-            'nama' => 'required|min:3',
-            'kode_pemasok' => 'required',
-            'harga' => 'required|min:5',
-        ]);
+        $barang_id = $request->input('barang_id');
+        $barang = Barang::find($barang_id);
+        $barang->kode_barang = $request->input('kode_barang');
+        $barang->kode_jenis = $request->input('kode_jenis');
+        $barang->nama = $request->input('nama');
+        $barang->kode_pemasok = $request->input('kode_pemasok');
+        $barang->harga = $request->input('harga');
+        $barang->update();
 
-        Barang::create([
-            'kode_jenis' => $request->kode_jenis,
-            'kode_barang' => $request->kode_barang,
-            'nama' => $request->nama,
-            'kode_pemasok' => $request->kode_pemasok,
-            'harga' => $request->harga
-        ]);
-
-        //redirect to index
-        return redirect()->route('barang.index')->with(['success' => 'Data Berhasil Disimpan!']);
+        return redirect()->back()->with('status', 'Updated berhasillll');
     }
 
-    public function edit(string $id): View
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Request $request)
     {
-        $barang = Barang::findOrFail($id);
-        $jenisBarangs = JenisBarang::all();
-        $pemasoks = Pemasok::all();
-        return view('barang.edit', compact('barang', 'jenisBarangs', 'pemasoks'), [
-            'title' => 'Form Edit Barang'
-        ]);
-    }
-
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //validate form
-        $this->validate($request, [
-            'kode_jenis' => 'required',
-            'nama' => 'required|min:3',
-            'kode_pemasok' => 'required',
-            'harga' => 'required|min:5',
-        ]);
-
-        //get post by ID
-        $post = Barang::findOrFail($id);
-
-        $post->update([
-            'kode_jenis' => $request->kode_jenis,
-            'nama' => $request->nama,
-            'kode_pemasok' => $request->kode_pemasok,
-            'harga' => $request->harga
-        ]);
-
-        //redirect to index
-        return redirect()->route('barang.index')->with(['success' => 'Data Berhasil Diubah!']);
-    }
-
-    public function destroy($id): RedirectResponse
-    {
-        //get post by ID
-        $post = Barang::findOrFail($id);
-
-        //delete post
-        $post->delete();
-
-        //redirect to index
-        return redirect()->route('barang.index')->with(['success' => 'Data Berhasil Dihapus!']);
+        $barang = $request->input('deleting_id');
+        $barang = Barang::find($barang);
+        $barang->delete();
+        return redirect()->back()->with('status', 'Delete Berhasil');
     }
 }

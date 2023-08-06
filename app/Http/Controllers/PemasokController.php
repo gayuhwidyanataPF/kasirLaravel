@@ -9,82 +9,92 @@ use Illuminate\Http\RedirectResponse;
 
 class PemasokController extends Controller
 {
-    public function index(): View
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
-        $pemasok = Pemasok::oldest()->paginate();
-
-        return view('pemasok.pemasok', compact('pemasok'), [
-            'title' => "Form Pemasok",
+        $pemasok = Pemasok::all();
+        $cek = Pemasok::count();
+        if($cek == 0){
+            $urut = 10001;
+            $nomer = 'PMSK' . $urut;
+        }else{
+            $ambil = Pemasok::all()->last();
+            $urut = (int)substr($ambil->kode_pemasok, - 5) + 1;
+            $nomer = 'PMSK' . $urut;
+        }
+        return view('pemasok.index', compact('pemasok', 'nomer') ,[
+            'title' => 'Data Pemasok'
         ]);
     }
 
-    public function create(): View
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
     {
-        return view('pemasok.create', [
-            'title' => "Form Tambah Pemasok",
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $pemasok = new Pemasok();
+        $pemasok->kode_pemasok = $request->input('kode_pemasok');
+        $pemasok->nama = $request->input('nama');
+        $pemasok->alamat = $request->input('alamat');
+        $pemasok->no_telp = $request->input('no_telp');
+        $pemasok->save();
+        return redirect()->back()->with('status', 'Status berhasillll');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $pemasok = Pemasok::find($id);
+        return response()->json([
+            'status'=>200,
+            'pemasok'=>$pemasok
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request)
     {
-        $this->validate($request, [
-            'kode_pemasok' => 'required|min:7',
-            'nama' => 'required|min:5',
-            'alamat' => 'required|min:5',
-            'no_telp' => 'required|min:12',
-        ]);
+        $pemasok_id = $request->input('pemasok_id');
+        $pemasok = Pemasok::find($pemasok_id);
+        $pemasok->kode_pemasok = $request->input('kode_pemasok');
+        $pemasok->nama = $request->input('nama');
+        $pemasok->alamat = $request->input('alamat');
+        $pemasok->no_telp = $request->input('no_telp');
+        $pemasok->update();
 
-        Pemasok::create([
-            'kode_pemasok' => $request->kode_pemasok,
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
-            'no_telp' => $request->no_telp
-        ]);
-
-        //redirect to index
-        return redirect()->route('pemasok.index')->with(['success' => 'Data Berhasil Disimpan!']);
+        return redirect()->back()->with('status', 'Updated berhasillll');
     }
 
-    public function edit(string $id): View
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Request $request)
     {
-        $pmasok = Pemasok::findOrFail($id);
-
-        return view('pemasok.edit', compact('pmasok'), [
-            'title' => 'Form Edit Pemasok'
-        ]);
-    }
-
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //validate form
-        $this->validate($request, [
-            'nama' => 'required|min:5',
-            'alamat' => 'required|min:5',
-            'no_telp' => 'required|min:12',
-        ]);
-
-        //get post by ID
-        $post = Pemasok::findOrFail($id);
-
-        $post->update([
-            'nama'     => $request->nama,
-            'alamat'   => $request->alamat,
-            'no_telp'   => $request->no_telp
-        ]);
-
-        //redirect to index
-        return redirect()->route('pemasok.index')->with(['success' => 'Data Berhasil Diubah!']);
-    }
-
-    public function destroy($id): RedirectResponse
-    {
-        //get post by ID
-        $post = Pemasok::findOrFail($id);
-
-        //delete post
-        $post->delete();
-
-        //redirect to index
-        return redirect()->route('pemasok.index')->with(['success' => 'Data Berhasil Dihapus!']);
+        $pemasok_id = $request->input('deleting_id');
+        $pemasok = Pemasok::find($pemasok_id);
+        $pemasok->delete();
+        return redirect()->back()->with('status', 'Delete Berhasil');
     }
 }

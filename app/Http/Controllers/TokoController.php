@@ -9,78 +9,90 @@ use Illuminate\Http\RedirectResponse;
 
 class TokoController extends Controller
 {
-    public function index(): View
+     /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
-        $tokos = Toko::oldest()->paginate();
-
-        return view('toko.toko', compact('tokos'), [
-            'title' => "Form Toko",
+        $toko = Toko::all();
+        $cek = Toko::count();
+        if($cek == 0){
+            $urut = 10001;
+            $nomer = 'TK' . $urut;
+        }else{
+            $ambil = Toko::all()->last();
+            $urut = (int)substr($ambil->kode_toko, - 5) + 1;
+            $nomer = 'Tk' . $urut;
+        }
+        return view('toko.index', compact('toko', 'nomer') ,[
+            'title' => 'Data Toko'
         ]);
     }
 
-    public function create(): View
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
     {
-        return view('toko.create', [
-            'title' => "Form Tambah Toko",
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $toko = new Toko();
+        $toko->kode_toko = $request->input('kode_toko');
+        $toko->nama = $request->input('nama');
+        $toko->alamat = $request->input('alamat');
+        $toko->save();
+        return redirect()->back()->with('status', 'Status berhasillll');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $toko = Toko::find($id);
+        return response()->json([
+            'status'=>200,
+            'toko'=>$toko
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request)
     {
-        $this->validate($request, [
-            'kode_toko' => 'required|min:5',
-            'nama' => 'required|min:5',
-            'alamat' => 'required|min:5'
-        ]);
+        $toko_id = $request->input('toko_id');
+        $toko = Toko::find($toko_id);
+        $toko->kode_toko = $request->input('kode_toko');
+        $toko->nama = $request->input('nama');
+        $toko->alamat = $request->input('alamat');
+        $toko->update();
 
-        Toko::create([
-            'kode_toko' => $request->kode_toko,
-            'nama' => $request->nama,
-            'alamat' => $request->alamat
-        ]);
-
-        //redirect to index
-        return redirect()->route('toko.index')->with(['success' => 'Data Berhasil Disimpan!']);
+        return redirect()->back()->with('status', 'Updated berhasillll');
     }
 
-    public function edit(string $id): View
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Request $request)
     {
-        $toko = Toko::findOrFail($id);
-
-        return view('toko.edit', compact('toko'), [
-            'title' => 'Form Edit Toko'
-        ]);
-    }
-
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //validate form
-        $this->validate($request, [
-            'nama' => 'required|min:5',
-            'alamat' => 'required|min:5'
-        ]);
-
-        //get post by ID
-        $post = Toko::findOrFail($id);
-
-        $post->update([
-            'nama'     => $request->nama,
-            'alamat'   => $request->alamat
-        ]);
-
-        //redirect to index
-        return redirect()->route('toko.index')->with(['success' => 'Data Berhasil Diubah!']);
-    }
-
-    public function destroy($id): RedirectResponse
-    {
-        //get post by ID
-        $post = Toko::findOrFail($id);
-
-        //delete post
-        $post->delete();
-
-        //redirect to index
-        return redirect()->route('toko.index')->with(['success' => 'Data Berhasil Dihapus!']);
+        $toko = $request->input('deleting_id');
+        $toko = Toko::find($toko);
+        $toko->delete();
+        return redirect()->back()->with('status', 'Delete Berhasil');
     }
 }

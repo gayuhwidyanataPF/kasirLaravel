@@ -9,78 +9,90 @@ use Illuminate\Http\RedirectResponse;
 
 class GudangController extends Controller
 {
-    public function index(): View
+     /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
-        $gudangs = Gudang::oldest()->paginate();
-
-        return view('gudang.gudang', compact('gudangs'), [
-            'title' => "Form Gudang",
+        $gudang = Gudang::all();
+        $cek = Gudang::count();
+        if($cek == 0){
+            $urut = 10001;
+            $nomer = 'GDNG' . $urut;
+        }else{
+            $ambil = Gudang::all()->last();
+            $urut = (int)substr($ambil->kode_gudang, - 5) + 1;
+            $nomer = 'GDNG' . $urut;
+        }
+        return view('gudang.index', compact('gudang', 'nomer') ,[
+            'title' => 'Data Gudang'
         ]);
     }
 
-    public function create(): View
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
     {
-        return view('gudang.create', [
-            'title' => "Form Tambah gudang",
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $gudang = new Gudang();
+        $gudang->kode_gudang = $request->input('kode_gudang');
+        $gudang->nama = $request->input('nama');
+        $gudang->alamat = $request->input('alamat');
+        $gudang->save();
+        return redirect()->back()->with('status', 'Status berhasillll');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $gudang = Gudang::find($id);
+        return response()->json([
+            'status'=>200,
+            'gudang'=>$gudang
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request)
     {
-        $this->validate($request, [
-            'kode_gudang' => 'required|min:7',
-            'nama' => 'required|min:5',
-            'alamat' => 'required|min:5',
-        ]);
+        $gudang_id = $request->input('gudang_id');
+        $gudang = Gudang::find($gudang_id);
+        $gudang->kode_gudang = $request->input('kode_gudang');
+        $gudang->nama = $request->input('nama');
+        $gudang->alamat = $request->input('alamat');
+        $gudang->update();
 
-        Gudang::create([
-            'kode_gudang' => $request->kode_gudang,
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
-        ]);
-
-        //redirect to index
-        return redirect()->route('gudang.index')->with(['success' => 'Data Berhasil Disimpan!']);
+        return redirect()->back()->with('status', 'Updated berhasillll');
     }
 
-    public function edit(string $id): View
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Request $request)
     {
-        $gudang = Gudang::findOrFail($id);
-
-        return view('gudang.edit', compact('gudang'), [
-            'title' => 'Form Edit Gudang'
-        ]);
-    }
-
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //validate form
-        $this->validate($request, [
-            'nama' => 'required|min:5',
-            'alamat' => 'required|min:5',
-        ]);
-
-        //get post by ID
-        $post = Gudang::findOrFail($id);
-
-        $post->update([
-            'nama'     => $request->nama,
-            'alamat'   => $request->alamat
-        ]);
-
-        //redirect to index
-        return redirect()->route('gudang.index')->with(['success' => 'Data Berhasil Diubah!']);
-    }
-
-    public function destroy($id): RedirectResponse
-    {
-        //get post by ID
-        $post = Gudang::findOrFail($id);
-
-        //delete post
-        $post->delete();
-
-        //redirect to index
-        return redirect()->route('gudang.index')->with(['success' => 'Data Berhasil Dihapus!']);
+        $gudang = $request->input('deleting_id');
+        $gudang = Gudang::find($gudang);
+        $gudang->delete();
+        return redirect()->back()->with('status', 'Delete Berhasil');
     }
 }

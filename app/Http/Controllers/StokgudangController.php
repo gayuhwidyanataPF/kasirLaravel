@@ -14,81 +14,76 @@ class StokgudangController extends Controller
 {
     public function index(): View
     {
-        $stokGudangs = StokGudang::oldest()->paginate();
+        $stokGudang = StokGudang::oldest()->paginate();
+        $barang = Barang::all();
+        $gudang = Gudang::all();
 
-        return view('stokGudang.stokGudang', compact('stokGudangs'), [
-            'title' => "Form Stok Gudang",
+        return view('stokGudang.index', compact('barang', 'gudang', 'stokGudang'), [
+            'title' => "Data Barang",
         ]);
     }
 
-    public function create(): View
+    public function create()
     {
-        $barangs = Barang::all();
-        $gudangs = Gudang::all();
-        return view('stokGudang.create', compact('barangs', 'gudangs'), [
-            'title' => "Form Tambah Stok Gudang"
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $stokGudang = new StokGudang();
+        $stokGudang->id_barang = $request->input('kode_barang');
+        $stokGudang->id_gudang = $request->input('kode_gudang');
+        $stokGudang->stok = $request->input('stok');
+        $stokGudang->save();
+        return redirect()->back()->with('status', 'Status berhasillll');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $stokGudang = StokGudang::find($id);
+        return response()->json([
+            'status'=>200,
+            'stokGudang'=>$stokGudang
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request)
     {
-        $this->validate($request, [
-            'id_barang' => 'required',
-            'id_gudang' => 'required',
-            'stok' => 'required|min:1',
-        ]);
+        $stokGudang_id = $request->input('stokGudang_id');
+        $stokGudang = StokGudang::find($stokGudang_id);
+        $stokGudang->id_barang = $request->input('kode_barang');
+        $stokGudang->id_gudang = $request->input('kode_gudang');
+        $stokGudang->stok = $request->input('stok');
+        $stokGudang->update();
 
-        StokGudang::create([
-            'id_barang' => $request->id_barang,
-            'id_gudang' => $request->id_gudang,
-            'stok' => $request->stok
-        ]);
-
-        //redirect to index
-        return redirect()->route('stokGudang.index')->with(['success' => 'Data Berhasil Disimpan!']);
+        return redirect()->back()->with('status', 'Updated berhasillll');
     }
 
-    public function edit(string $id): View
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Request $request)
     {
-        $stokGudang = StokGudang::findOrFail($id);
-        $barangs = Barang::all();
-        $gudangs = Gudang::all();
-        return view('stokGudang.edit', compact('stokGudang', 'barangs', 'gudangs'), [
-            'title' => 'Form Edit Barang ke Gudang'
-        ]);
-    }
-
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //validate form
-        $this->validate($request, [
-            // 'id_barang' => 'required',
-            'id_gudang' => 'required',
-            'stok' => 'required|min:1',
-        ]);
-
-        //get post by ID
-        $post = StokGudang::findOrFail($id);
-
-        $post->update([
-            // 'id_barang' => $request->id_barang,
-            'id_gudang' => $request->id_gudang,
-            'stok' => $request->stok
-        ]);
-
-        //redirect to index
-        return redirect()->route('stokGudang.index')->with(['success' => 'Data Berhasil Diubah!']);
-    }
-
-    public function destroy($id): RedirectResponse
-    {
-        //get post by ID
-        $post = StokGudang::findOrFail($id);
-
-        //delete post
-        $post->delete();
-
-        //redirect to index
-        return redirect()->route('stokGudang.index')->with(['success' => 'Data Berhasil Dihapus!']);
+        $stokGudang = $request->input('deleting_id');
+        $stokGudang = StokGudang::find($stokGudang);
+        $stokGudang->delete();
+        return redirect()->back()->with('status', 'Delete Berhasil');
     }
 }
