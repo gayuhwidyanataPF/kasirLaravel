@@ -12,13 +12,21 @@ class Barang extends Model
         'kode_jenis',
         'kode_barang',
         'kode_pemasok',
+        'kode_gudang',
         'nama',
-        'harga'
+        'harga',
+        'harga_jual',
+        'stok'
     ];
 
     public function RjenisBarang()
     {
         return $this->belongsTo(JenisBarang::class, 'kode_jenis');
+    }
+    
+    public function Rgudang()
+    {
+        return $this->belongsTo(Gudang::class, 'kode_gudang');
     }
 
     public function RRpemasok()

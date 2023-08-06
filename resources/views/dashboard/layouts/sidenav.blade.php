@@ -27,11 +27,22 @@
                 <div class="sb-sidenav-menu-heading">Transaksi</div>
                 <a class="nav-link" href="charts.html">
                     <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                    Manajer Akun
+                    Pengeluaran
                 </a>
                 <a class="nav-link" href="tables.html">
                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                    Tables
+                    Transaksi Penjualan
+                </a>
+                <div class="sb-sidenav-menu-heading">Report</div>
+                <a class="nav-link" href="charts.html">
+                    <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                    Laporan Keuangan
+                </a>
+                <div class="sb-sidenav-menu-heading">Setting</div>
+                    <form action="/logout" class="nav-link" method="post">
+                        @csrf
+                        <button type="submit" class="dropdown-item">Logout</button>
+                    </form>
                 </a>
             </div>
         </div>

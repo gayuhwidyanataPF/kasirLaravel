@@ -8,6 +8,8 @@ use App\Models\StokGudang;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Model;
 
 
 class StokgudangController extends Controller
@@ -33,6 +35,15 @@ class StokgudangController extends Controller
      */
     public function store(Request $request)
     {
+        // Validasi input yang diterima dari pengguna dengan pesan kustom
+        $validator = Validator::make($request->all(), [
+            'stok' => 'required|integer|min:0', // Memastikan quantity tidak bernilai minus
+        ]);
+
+        // Jika validasi gagal, kembalikan pengguna ke halaman formulir dengan pesan kesalahan
+        if ($validator->fails()) {
+            return redirect()->back()->with('gagal', 'Gagal Menambahkan Karena Input Tidak Cocok');
+        }
         $stokGudang = new StokGudang();
         $stokGudang->id_barang = $request->input('kode_barang');
         $stokGudang->id_gudang = $request->input('kode_gudang');

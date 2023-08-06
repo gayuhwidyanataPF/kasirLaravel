@@ -125,6 +125,9 @@
             @if (session('status'))
                 <div class="alert alert-success">{{ session('status') }}</div>
             @endif
+            @if (session('gagal'))
+                <div class="alert alert-danger">{{ session('gagal') }}</div>
+            @endif
             <h1 class="my-4 text-center">Data Barang ke Gudang</h1>
             <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Masukan Barang</button>
             <a href="/barang" class="btn btn-secondary mb-3">Kembali</a>

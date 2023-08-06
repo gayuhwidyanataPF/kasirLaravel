@@ -65,13 +65,13 @@ Route::get('/edit-stokGudang/{id}', [StokgudangController::class, 'edit']);
 Route::put('/update-stokGudang', [StokgudangController::class, 'update']);
 Route::delete('/delete-stokGudang', [StokgudangController::class, 'destroy']);
 
-Route::get('/', function () {
-    return view('dashboard.index', [
-        'title' => 'Halaman Admin'
-    ]);
-});
+// Route::get('/', function () {
+//     return view('dashboard.index', [
+//         'title' => 'Halaman Admin'
+//     ]);
+// });
 
-Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::get('/', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate']);
 Route::post('/logout', [LoginController::class, 'logout']);
 

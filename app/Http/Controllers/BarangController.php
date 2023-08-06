@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Gudang;
 use App\Models\JenisBarang;
 use App\Models\Pemasok;
+use App\Models\StokGudang;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -16,6 +18,7 @@ class BarangController extends Controller
         $barang = Barang::oldest()->paginate();
         $jenisBarang = JenisBarang::all();
         $pemasok = Pemasok::all();
+        $gudang = Gudang::all();
 
         $cek = Barang::count();
         if($cek == 0){
@@ -27,7 +30,7 @@ class BarangController extends Controller
             $nomer = 'BRG' . $urut;
         }
 
-        return view('barang.index', compact('barang', 'jenisBarang', 'pemasok', 'nomer'), [
+        return view('barang.index', compact('barang', 'jenisBarang', 'pemasok', 'nomer', 'gudang'), [
             'title' => "Data Barang",
         ]);
     }
@@ -48,6 +51,9 @@ class BarangController extends Controller
         $barang->nama = $request->input('nama');
         $barang->kode_pemasok = $request->input('kode_pemasok');
         $barang->harga = $request->input('harga');
+        $barang->harga_jual = $request->input('harga_jual');
+        $barang->kode_gudang = $request->input('kode_gudang');
+        $barang->stok = $request->input('stok');
         $barang->save();
         return redirect()->back()->with('status', 'Status berhasillll');
     }

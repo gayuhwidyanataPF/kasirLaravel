@@ -18,4 +18,8 @@ class Gudang extends Model
     {
         return $this->hasOne(Gudang::class);
     }
+    public function Rbarang()
+    {
+        return $this->hasOne(Gudang::class);
+    }
 }
